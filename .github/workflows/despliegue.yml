@@ -1,0 +1,39 @@
+name: Remote SSH Command
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+jobs:
+  build:
+    name: Correr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar y correr proyecto en maquina virtual
+        uses: appleboy/ssh-action@v1
+        env:
+          RSA_PUB: ${{ secrets.RSA_PUB }}
+          RSA_PRIV: ${{ secrets.RSA_PRIV }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_PRIV_KEY }}
+          envs: RSA_PUB,RSA_PRIV,DB_URL,DB_USER,DB_PASS
+          port: ${{ secrets.VM_PORT }}
+          script: |
+            cd ~/git/repository/yb-server
+            git pull origin main
+            chmod +x gradlew
+            rm -f .env
+            echo "DB_URL=$DB_URL" > .env
+            echo "DB_USER=$DB_USER" >> .env
+            echo "DB_PASS=$DB_PASS" >> .env
+            echo "RSA_PUB=$RSA_PUB" >> .env
+            echo "RSA_PRIV=$RSA_PRIV" >> .env
+            pkill -f 'java' || echo "No hay procesos previos"
+            ./gradlew clean
+            ./gradlew build -x test
+            JAR_FILE=$(ls build/libs/*.jar | grep -v "plain" | head -n 1)
+            nohup java -Xmx450M -jar $JAR_FILE > app.log 2>&1 &

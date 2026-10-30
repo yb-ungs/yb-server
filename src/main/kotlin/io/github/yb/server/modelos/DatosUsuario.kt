@@ -1,6 +1,7 @@
 package io.github.yb.server.modelos
 
 import io.github.yb.server.entidades.Usuario
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.OffsetDateTime
 
 data class DatosUsuario (
@@ -9,14 +10,15 @@ data class DatosUsuario (
     val universidad: String,
     val contacto: String,
     val perfil: String,
-    val seUnioEl: OffsetDateTime
+    @Schema(description = "string en formato ISO")
+    val seUnioEl: String
 ) {
     constructor(usuario: Usuario) : this(
         username = usuario.username,
         email = usuario.email,
         universidad = usuario.universidad,
-        contacto = usuario.contacto,
+        contacto = usuario.contacto ?: "",
         perfil = usuario.perfil,
-        seUnioEl = usuario.creadoEl
+        seUnioEl = usuario.creadoEl.toString()
     )
 }
