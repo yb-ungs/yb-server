@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class GoogleTokenFilter(
+class FiltroTokenGoogle(
     private val authenticationManager: AuthenticationManager
 ) : OncePerRequestFilter() {
 
@@ -17,7 +17,7 @@ class GoogleTokenFilter(
         val googleHeader = request.getHeader("X-Google-Auth")
 
         if (googleHeader != null && SecurityContextHolder.getContext().authentication == null) {
-            val authRequest = GoogleAuthenticationToken(googleHeader)
+            val authRequest = AutentificacionTokenGoogle(googleHeader)
             val authResult = authenticationManager.authenticate(authRequest)
             SecurityContextHolder.getContext().authentication = authResult
         }

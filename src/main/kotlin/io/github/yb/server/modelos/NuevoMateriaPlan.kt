@@ -1,4 +1,4 @@
-package io.github.yb.server.repositorios
+package io.github.yb.server.modelos
 
 data class NuevoMateriaPlan(
     val idMateria: String,

@@ -3,17 +3,17 @@ package io.github.yb.server.google
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
-class GoogleAuthenticationToken(
+class AutentificacionTokenGoogle(
     private val idToken: String,
-    val principal: Any? = null,
+    private val principalInterno: Any? = null,
     autoridades: Collection<GrantedAuthority> = emptyList()
-) : AbstractAuthenticationToken(autoridades) {
+): AbstractAuthenticationToken(autoridades) {
     init {
-        if (principal != null) isAuthenticated = true
+        if (principalInterno != null) isAuthenticated = true
     }
 
     override fun getCredentials() = idToken
     override fun getPrincipal(): Any? {
-        return principal
+        return principalInterno
     }
 }

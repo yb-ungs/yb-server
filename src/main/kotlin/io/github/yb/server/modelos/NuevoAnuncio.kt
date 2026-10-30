@@ -1,4 +1,8 @@
 package io.github.yb.server.modelos
 
-class NuevoAnuncio {
-}
+data class NuevoAnuncio (
+    val autor: String,
+    val titulo: String,
+    val contenido: String,
+    val agrupacion: String,
+)

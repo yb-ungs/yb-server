@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
 
 @Entity
 @Table(name = "apuntes")
-data class Apuntes (
+data class Apunte (
     @Id
     val id: String,
     val idApunte: String,

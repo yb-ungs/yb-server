@@ -8,9 +8,9 @@ class ExcepcionInicializacion (
     val causa: String,
 ) : RuntimeException() {
     override val message: String = """
-        Initialization Failed 
-        Instance of: ${clase.java.name}
-        Parameter: $parametro
-        Cause: $causa
+        Fallo en inicialización
+        Clase: ${clase.java.name}
+        Parametro: $parametro
+        Causa: $causa
     """.trimIndent()
 }

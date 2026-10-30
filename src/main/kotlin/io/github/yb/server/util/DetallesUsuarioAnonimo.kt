@@ -3,14 +3,14 @@ package io.github.yb.server.util
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Component
 
-
-class DetallesUsuarioAnonimo(encriptador: PasswordEncoder) : UserDetails {
-
-    val usuario = "anonimo"
+class DetallesUsuarioAnonimo(
+    encriptador: PasswordEncoder,
+    val usuario: String,
+    perfiles: Perfiles
+) : UserDetails {
     val pass = encriptador.encode("anonimo")
-    val autoridades = autoridadesDePerfil("anonimo")
+    val autoridades = perfiles.anonimo
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return autoridades

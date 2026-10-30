@@ -1,15 +1,26 @@
 package io.github.yb.server.servicios
 
 import io.github.yb.server.util.Permiso
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.math.BigInteger
+import java.util.Random
 import kotlin.math.abs
 
 @Service
-class ServicioDeHash {
+class ServicioHash {
 
-    private val magicNumber by lazy {
-        val nombres = 
-        for (m in 0..100000 step 1) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(ServicioHash::class.java)
+    }
+
+    val modulo = Permiso.entries.size * 15
+    val numeroMagico by lazy {
+        val nombres = Permiso.entries.map { it.name }
+        var magico = -1
+        val rdn = Random()
+        while (true) {
+            val m = BigInteger.probablePrime(20, rdn).intValueExact()
             val hashesVistos = mutableSetOf<Int>()
             var huboColision = false
 
@@ -20,23 +31,29 @@ class ServicioDeHash {
                     break
                 }
             }
-
-            if (!huboColision) return m
+            if (!huboColision){
+                magico = m
+                break;
+            }
         }
-        throw RuntimeException("No se encontró número mágico.")
+        if(magico == -1){
+            throw RuntimeException("No se encontró número mágico.")
+        }
+
+        logger.info("se creó servicio de hash con numero magico {} y modulo {}", magico, modulo)
+        magico
     }
 
-    private fun buscarNumeroMagico(nombres: List<String>): Int {
+    private fun hash(nombre: String, numeroMagico: Int): Int {
 
-    }
-
-    fun hash(nombre: String, magicNumber: Int): Int {
-        val modulo = Permiso.entries.size * 2 + 1
         var hash = 0
         for (char in nombre) {
-            hash = hash * magicNumber + char.code
+            hash = hash * numeroMagico + char.code
         }
-        // Usamos rem (módulo) y abs para asegurar el rango [0, 78]
         return abs(hash % modulo)
+    }
+
+    fun hash(nombre: String): Int {
+        return hash(nombre, numeroMagico)
     }
 }

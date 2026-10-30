@@ -1,4 +1,7 @@
 package io.github.yb.server.modelos
 
-class NuevoMateria {
-}
+data class NuevoMateria(
+    val idMateria: String,
+    val nombre: String,
+    val universidad: String
+)

@@ -9,6 +9,7 @@ import io.github.yb.server.repositorios.RepositorioUsuario
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.OffsetDateTime
 
 @Service
 class ServicioUsuario(
@@ -16,12 +17,24 @@ class ServicioUsuario(
     val encriptador: PasswordEncoder,
     val servicioContextoSeguridad: ServicioContextoSeguridad
 ) {
+
+    private fun NuevoUsuario.usuario(encriptador: PasswordEncoder): Usuario {
+        return Usuario(
+            username = username,
+            pass = encriptador.encode(pass)!!.encodeToByteArray(),
+            email = email,
+            universidad = universidad,
+            contacto = contacto ?: "",
+            creadoEl = OffsetDateTime.now(),
+            perfil = "usuario"
+        )
+    }
     fun obtenerUsuario(usuario: String): Usuario {
         return repositorioUsuario.encontrarPorUsuario(usuario)
             ?: throw UsernameNotFoundException("usuario $usuario no encontrado")
     }
 
-    fun actualizarUsuario(datos: DatosUsuario) {
+    fun actualizar(datos: DatosUsuario) {
         val usuario = obtenerUsuario(datos.username)
         val registroActualizado = Usuario(
             username = usuario.username,
@@ -32,7 +45,7 @@ class ServicioUsuario(
             creadoEl = usuario.creadoEl,
             perfil = usuario.perfil
         )
-        repositorioUsuario.save(registroActualizado)
+        repositorioUsuario.actualizar(registroActualizado)
     }
 
     fun cambiarPass(cambioPass: CambioPass) {
@@ -46,11 +59,10 @@ class ServicioUsuario(
             creadoEl = usuario.creadoEl,
             perfil = usuario.perfil
         )
-        repositorioUsuario.save(registroActualizado)
+        repositorioUsuario.actualizar(registroActualizado)
     }
 
     fun cambiarPeril(cambioPerfil: CambioPerfil) {
-        val (username, perfil) = cambioPerfil
         val usuario = obtenerUsuario(cambioPerfil.username)
         val registroActualizado = Usuario(
             username = usuario.username,
@@ -61,14 +73,14 @@ class ServicioUsuario(
             creadoEl = usuario.creadoEl,
             perfil = cambioPerfil.perfil
         )
-        repositorioUsuario.save(registroActualizado)
+        repositorioUsuario.actualizar(registroActualizado)
     }
 
-    fun guardarNuevoUsuario(nuevoUsuario: NuevoUsuario) {
-        repositorioUsuario.save(nuevoUsuario.usuario(encriptador))
+    fun crear(nuevoUsuario: NuevoUsuario) {
+        repositorioUsuario.crear(nuevoUsuario.usuario(encriptador))
     }
 
-    fun borrarUsuario(username: String) {
+    fun borrar(username: String) {
         repositorioUsuario.delete(
             repositorioUsuario.encontrarPorUsuario(username)
                 ?: throw UsernameNotFoundException("usuario $username no encontrado")
@@ -87,7 +99,7 @@ class ServicioUsuario(
     }
 
     fun encontrarPorUniversidad(universidad: String): List<DatosUsuario> {
-        return repositorioUsuario.encontrarPorUniversidad(universidad)
+        return repositorioUsuario.encontrarPorUniversidad(universidad).map { DatosUsuario(it) }
     }
 
     fun usuarioExiste(usuario: String): Boolean {

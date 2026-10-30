@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.yb"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0-beta.1"
 
 java {
 	toolchain {
@@ -24,9 +24,18 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
+	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
+	implementation("com.github.f4b6a3:uuid-creator:6.1.1")
+	implementation("ch.qos.logback:logback-core:1.5.32")
+	implementation("com.zaxxer:HikariCP:7.0.2")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
+	implementation("com.google.api-client:google-api-client:2.9.0")
+	implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server-test")
@@ -34,6 +43,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("com.ninja-squad:springmockk:5.0.1")
 }
 
 kotlin {

@@ -1,4 +1,6 @@
 package io.github.yb.server.modelos
 
-class NuevoCarreraUsuario {
-}
+data class NuevoCarreraUsuario(
+    val carrera: String,
+    val username: String
+)
